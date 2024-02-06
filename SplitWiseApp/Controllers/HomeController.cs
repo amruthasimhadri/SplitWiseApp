@@ -18,6 +18,17 @@ namespace SplitWiseApp.Controllers
             return View();
         }
 
+        public IActionResult Amrutha()
+        {
+            return View();
+        }
+
+        public IActionResult New1234()
+
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();
