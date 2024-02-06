@@ -22,7 +22,7 @@ namespace SplitWiseApp.Controllers
             return View();
         }
 
-        public IActionResult Amrutha()
+        public IActionResult Amrutha1()
         {
             return View();
         }
