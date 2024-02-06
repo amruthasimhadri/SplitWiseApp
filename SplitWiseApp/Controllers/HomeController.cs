@@ -13,7 +13,7 @@ namespace SplitWiseApp.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index123()
+        public IActionResult Index1234()
         {
             return View();
         }
