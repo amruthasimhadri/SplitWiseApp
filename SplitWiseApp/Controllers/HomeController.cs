@@ -17,6 +17,10 @@ namespace SplitWiseApp.Controllers
         {
             return View();
         }
+        public IActionResult Greeshma()
+        {
+            return View();
+        }
 
         public IActionResult Amrutha()
         {
