@@ -1,0 +1,85 @@
+﻿@model SplitWiseApp.Models.UserModel
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fafafa;
+            text-align: center;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #8a2be2;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+            button:hover {
+                background-color: #3271a8;
+            }
+    </style>
+</head>
+<body>
+
+    <form asp-action="Register" asp-controller="SplitWise" method="post" >
+
+        <label for="Name">Name</label>
+        <input type="text" id="Name" name="Name" required>
+        
+        <label for="Email">Email</label>
+        <input type="text" id="Email" name="Email" required>
+        
+        <label for="Number">Number</label>
+        <input type="text" id="Number" name="Number" required>
+        
+        <label for="Password">Password</label>
+        <input type="Password" id="Password" name="Password" required>
+
+        
+
+        <button type="submit">Create Account</button>
+        @if (ViewBag.SuccessMessage != null)
+        {
+            <p style="color: green;">@ViewBag.SuccessMessage</p>
+            <p>Click <a href="@Url.Action("Login", "SplitWise")">here</a> to login.</p>
+        }
+    </form>
+    <div class="text-center">
+        <p><a href="@Url.Action("Login", "SplitWise")">Back To Login</a></p>
+    </div>
+
+</body>
+</html>
+
+
