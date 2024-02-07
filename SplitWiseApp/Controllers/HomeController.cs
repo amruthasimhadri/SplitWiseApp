@@ -13,22 +13,7 @@ namespace SplitWiseApp.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index1234()
-        {
-            return View();
-        }
-        public IActionResult Greeshma()
-        {
-            return View();
-        }
-
-        public IActionResult Amrutha1()
-        {
-            return View();
-        }
-
-        public IActionResult New1234()
-
+        public IActionResult Index()
         {
             return View();
         }
