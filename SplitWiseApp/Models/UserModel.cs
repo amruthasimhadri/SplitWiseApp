@@ -15,6 +15,8 @@ namespace SplitWiseApp.Models
         [Required]
         public string Password { get; set; }
 
+        public int Id { get; set; }
+
 
     }
 }

@@ -1,0 +1,37 @@
+﻿@model SplitWiseApp.Models.GroupModel
+
+<h1>Create New Group</h1>
+
+@if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
+{
+    <div class="alert alert-success" role="alert">
+        @ViewBag.SuccessMessage
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.ErrorMessage
+    </div>
+}
+
+<form method="post">
+    <div class="form-group">
+        <label for="GroupName">Enter Group Name:</label>
+        <input type="text" class="form-control" id="GroupName" name="GroupName" required>
+    </div>
+    <div class="form-group">
+        <label for="TypeId">Select Category:</label>
+        <select class="form-control" id="TypeId" name="TypeId" required>
+            <option value="">Select Category</option>
+            @foreach (var category in ViewBag.Categories)
+            {
+                <option value="@category.Value">@category.Text</option>
+            }
+        </select>
+
+    </div>
+    <button type="submit" class="btn btn-primary">Create Group</button>
+</form>
+
