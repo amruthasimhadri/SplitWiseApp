@@ -20,16 +20,26 @@ namespace SplitWiseApi.Controllers
         [HttpPost]
         [Route("AddUser")]
         public void AddUser([FromBody] UserModel model)
-        {
-            SqlCommand cmd = new SqlCommand("AddUser", con);
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@Name", model.Name);
-            cmd.Parameters.AddWithValue("@Password", model.Password);
-            cmd.Parameters.AddWithValue("@Email", model.Email);
-            cmd.Parameters.AddWithValue("@PhNo", model.Number);
-            cmd.ExecuteNonQuery();
-
+        {        
+                SqlCommand cmd = new SqlCommand("AddUser", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Name", model.Name);
+                cmd.Parameters.AddWithValue("@Password", model.Password);
+                cmd.Parameters.AddWithValue("@Email", model.Email);
+                cmd.Parameters.AddWithValue("@PhNo", model.Number);
+                cmd.ExecuteNonQuery();
+               
         }
+        //public bool IsUserAlreadyRegistered(string email)
+        //{
+        //    SqlCommand cmd = new SqlCommand("CheckUserExistence", con);
+        //    cmd.CommandType = CommandType.StoredProcedure;
+        //    cmd.Parameters.AddWithValue("@Email", email);
+
+        //    int count = (int)cmd.ExecuteScalar();
+        //    return count > 0;
+        //}
+
         [HttpPost]
         [Route("VerifyUser")]
 
@@ -54,15 +64,34 @@ namespace SplitWiseApi.Controllers
         //----------------Add Group---------------------
         [HttpPost]
         [Route("AddGroup")]
-        public void AddGroup([FromBody]AddNewGroup model)
+        public IActionResult AddGroup([FromBody] AddNewGroup model)
         {
-            SqlCommand cmd = new SqlCommand("AddNewGroup", con);
-            cmd.CommandType=System.Data.CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@TypeId", model.TypeId);
-            cmd.Parameters.AddWithValue("@GroupName",model.GroupName);
-            cmd.Parameters.AddWithValue("@CreatedBy", model.CreatedBy);
-            int a=cmd.ExecuteNonQuery();
+          
+                SqlCommand cmd = new SqlCommand("AddNewGroup", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@TypeId", model.TypeId);
+                cmd.Parameters.AddWithValue("@GroupName", model.GroupName);
+                cmd.Parameters.AddWithValue("@CreatedBy", model.CreatedBy);
+
+            SqlParameter outputParam = new SqlParameter();
+            outputParam.ParameterName = "@GroupId";
+            outputParam.SqlDbType = SqlDbType.Int;
+            outputParam.Direction = ParameterDirection.Output;
+            cmd.Parameters.Add(outputParam);
+            cmd.ExecuteNonQuery();
+
+            //cmd.ExecuteNonQuery();
+
+            int groupId = Convert.ToInt32(outputParam.Value);
+
+           // return Ok(new { GroupId = groupId });
+           return Ok(groupId);
+
         }
+
+
+
+
 
         [HttpGet]
         [Route("GetGroupTypes")]
@@ -75,8 +104,8 @@ namespace SplitWiseApi.Controllers
             {
                 Types.Add(new GroupTypeModel
                 {
-                    Id= r.GetInt32("Id"),
-                    Name= r.GetString("Name"),
+                    Id = r.GetInt32("Id"),
+                    Name = r.GetString("Name"),
                 });
 
             }

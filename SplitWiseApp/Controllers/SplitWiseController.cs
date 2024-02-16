@@ -22,6 +22,7 @@ namespace SplitWiseApp.Controllers
             _apiService.AddUser(user);
             ViewBag.SuccessMessage = "Registered Successfully";
             return View();
+
         }
         [HttpGet]
         public IActionResult Login()
@@ -71,12 +72,28 @@ namespace SplitWiseApp.Controllers
             newGroup.GroupName = group.GroupName;
             newGroup.TypeId = group.TypeId; // Assign TypeId here
 
-            _apiService.AddGroup(newGroup);
-            ViewBag.SuccessMessage = "Group created successfully!";
+            //_apiService.AddGroup(newGroup);
+            //ViewBag.SuccessMessage = "Group created successfully!";
+
+            //var categories = _apiService.GetGroupTypes();
+            //ViewBag.Categories = categories.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name }).ToList();
+            //return View(group);
+            int? groupId = _apiService.AddGroup(newGroup);
+
+            if (groupId != null)
+            {
+                HttpContext.Session.SetInt32("GroupId", groupId.Value);
+                ViewBag.SuccessMessage = "Group created successfully!";
+            }
+            else
+            {
+                ViewBag.ErrorMessage = "Failed to create group.";
+            }
 
             var categories = _apiService.GetGroupTypes();
             ViewBag.Categories = categories.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name }).ToList();
             return View(group);
+
         }
 
 

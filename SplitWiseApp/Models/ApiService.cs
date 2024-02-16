@@ -1,5 +1,6 @@
 ﻿
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -50,12 +51,75 @@ namespace SplitWiseApp.Models
         //    //response.EnsureSuccessStatusCode();
 
         //}
-        public void AddGroup(AddNewGroup model)
+        public int? AddGroup(AddNewGroup model)
         {
             string apiUrl = "http://localhost:5001/api/SplitWise/AddGroup";
             var response = _httpClient.PostAsJsonAsync(apiUrl, model).Result;
-            response.EnsureSuccessStatusCode();
+            if (response.IsSuccessStatusCode)
+            {
+                var groupId = response.Content.ReadAsStringAsync().Result;
+                if (int.TryParse(groupId, out int GroupId))
+                {
+                    return GroupId;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+
+            //if (response.IsSuccessStatusCode)
+            //{
+            //    try
+            //    {
+            //        var content = response.Content.ReadAsStringAsync().Result;
+
+            //        // Log or print out the response content for debugging
+            //        Console.WriteLine("Response Content: " + content);
+
+            //        // Parse the content as JSON
+            //        var jsonObject = JObject.Parse(content);
+
+            //        // Extract the groupId value
+            //        if (jsonObject.TryGetValue("groupId", out JToken groupIdToken))
+            //        {
+            //            if (int.TryParse(groupIdToken.ToString(), out int groupId))
+            //            {
+            //                return groupId;
+            //            }
+            //            else
+            //            {
+            //                // Log or print out if parsing groupId fails
+            //                Console.WriteLine("Failed to parse groupId: " + groupIdToken.ToString());
+            //            }
+            //        }
+            //        else
+            //        {
+            //            // Log or print out if groupId key is not found
+            //            Console.WriteLine("groupId key not found in response.");
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        // Log or handle other exceptions
+            //        Console.WriteLine("Error: " + ex.Message);
+            //        return null;
+            //    }
+            //}
+            //else
+            //{
+            //    // Log or handle non-successful response
+            //    Console.WriteLine("Failed with status code: " + response.StatusCode);
+            //}
+
+            //return null;
         }
+
+
 
 
         public List<GroupTypeModel> GetGroupTypes()
