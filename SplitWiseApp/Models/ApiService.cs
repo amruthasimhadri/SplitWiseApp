@@ -71,56 +71,8 @@ namespace SplitWiseApp.Models
             {
                 return null;
             }
-
-            //if (response.IsSuccessStatusCode)
-            //{
-            //    try
-            //    {
-            //        var content = response.Content.ReadAsStringAsync().Result;
-
-            //        // Log or print out the response content for debugging
-            //        Console.WriteLine("Response Content: " + content);
-
-            //        // Parse the content as JSON
-            //        var jsonObject = JObject.Parse(content);
-
-            //        // Extract the groupId value
-            //        if (jsonObject.TryGetValue("groupId", out JToken groupIdToken))
-            //        {
-            //            if (int.TryParse(groupIdToken.ToString(), out int groupId))
-            //            {
-            //                return groupId;
-            //            }
-            //            else
-            //            {
-            //                // Log or print out if parsing groupId fails
-            //                Console.WriteLine("Failed to parse groupId: " + groupIdToken.ToString());
-            //            }
-            //        }
-            //        else
-            //        {
-            //            // Log or print out if groupId key is not found
-            //            Console.WriteLine("groupId key not found in response.");
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        // Log or handle other exceptions
-            //        Console.WriteLine("Error: " + ex.Message);
-            //        return null;
-            //    }
-            //}
-            //else
-            //{
-            //    // Log or handle non-successful response
-            //    Console.WriteLine("Failed with status code: " + response.StatusCode);
-            //}
-
-            //return null;
+  
         }
-
-
-
 
         public List<GroupTypeModel> GetGroupTypes()
         {
@@ -130,6 +82,23 @@ namespace SplitWiseApp.Models
             var jsonString=response.Content.ReadAsStringAsync().Result;
             var types = JsonConvert.DeserializeObject<List<GroupTypeModel>>(jsonString);
             return types;
+        }
+
+        public List<Friends> GetFriends(int userId)
+        {
+             string apiUrl=$"http://localhost:5001/api/SplitWise/GetFriends?userId={userId}";
+            var response = _httpClient.GetAsync(apiUrl).Result;
+            response.EnsureSuccessStatusCode();
+            var jsonString = response.Content.ReadAsStringAsync().Result;
+            var friends = JsonConvert.DeserializeObject<List<Friends>>(jsonString);
+            return friends;
+        }
+
+        public void AddGroupMember(GroupMembers groupMember)
+        {
+            string apiUrl = "http://localhost:5001/api/SplitWise/AddGroupMembers";
+            var response = _httpClient.PostAsJsonAsync(apiUrl, groupMember).Result;
+            response.EnsureSuccessStatusCode();
         }
 
     }

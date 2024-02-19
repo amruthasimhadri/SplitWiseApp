@@ -1,0 +1,60 @@
+﻿
+@model List<SplitWiseApp.Models.Friends>
+
+<h1>Add Group Members</h1>
+
+@if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
+{
+    <div class="alert alert-success" role="alert">
+        @ViewBag.SuccessMessage
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.ErrorMessage
+    </div>
+}
+
+<form method="post" asp-action="AddGroupMembers">
+    @foreach (var friend in Model)
+    {
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="friend-@friend.FriendId" name="friends" value="@friend.FriendId">
+            <label class="form-check-label" for="friend-@friend.FriendId">@friend.FriendName</label>
+        </div>
+    }
+    <button type="submit" class="btn btn-primary">Add Selected Friends</button>
+</form>
+
+
+
+
+
+@*@model List<Friends>
+
+<h2>Friends</h2>
+<form method="post" asp-action="AddGroupMembers">
+    <input type="hidden" name="groupId" value="@ViewBag.GroupId" />
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Select</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var friend in Model)
+            {
+                <tr>
+                    <td>@friend.FriendName</td>
+                    <td><input type="checkbox" name="friends[@friend.Id].IsSelected" value="true" /></td>
+                    <input type="hidden" name="friends[@friend.Id].FriendId" value="@friend.FriendId" />
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button type="submit">Add Selected Friends to Group</button>
+</form>
+*@

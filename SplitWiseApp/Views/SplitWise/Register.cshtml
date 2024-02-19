@@ -1,11 +1,18 @@
-﻿@model SplitWiseApp.Models.UserModel
+﻿
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Instagram Registration</title>
+
     <style>
+
         body {
             font-family: Arial, sans-serif;
             background-color: #fafafa;
@@ -19,6 +26,7 @@
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
         }
 
         label {
@@ -37,7 +45,7 @@
         }
 
         button {
-            background-color: #8a2be2;
+            background-color: #000;
             color: #fff;
             padding: 10px 15px;
             border: none;
@@ -46,40 +54,80 @@
         }
 
             button:hover {
-                background-color: #3271a8;
+                background-color: #333;
             }
+
+        .text-center {
+            text-align: center;
+        }
     </style>
+
 </head>
+
 <body>
 
-    <form asp-action="Register" asp-controller="SplitWise" method="post" >
+    <form asp-action="Register" asp-controller="SplitWise" method="post">
 
-        <label for="Name">Name</label>
-        <input type="text" id="Name" name="Name" required>
-        
-        <label for="Email">Email</label>
-        <input type="text" id="Email" name="Email" required>
-        
-        <label for="Number">Number</label>
-        <input type="text" id="Number" name="Number" required>
-        
-        <label for="Password">Password</label>
-        <input type="Password" id="Password" name="Password" required>
+        <div class="form-group">
 
-        
+            <label for="Name">Name</label>
 
-        <button type="submit">Create Account</button>
+            <input type="text" id="Name" name="Name" required>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="Email">Email</label>
+
+            <input type="text" id="Email" name="Email" required>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="Number">Number</label>
+
+            <input type="text" id="Number" name="Number" required>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="Password">Password</label>
+
+            <input type="password" id="Password" name="Password" required>
+
+        </div>
+
+        <div class="text-left">
+
+            <button type="submit">Create Account</button>
+
+        </div>
+
         @if (ViewBag.SuccessMessage != null)
+
         {
+
             <p style="color: green;">@ViewBag.SuccessMessage</p>
+
             <p>Click <a href="@Url.Action("Login", "SplitWise")">here</a> to login.</p>
+
         }
+
+        <br />
+
+        <div class="text-center">
+
+            <p><a href="@Url.Action("Login", "SplitWise")">Back To Login</a></p>
+
+        </div>
+
     </form>
-    <div class="text-center">
-        <p><a href="@Url.Action("Login", "SplitWise")">Back To Login</a></p>
-    </div>
+
+
 
 </body>
+
 </html>
-
-

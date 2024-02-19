@@ -21,6 +21,21 @@
                     <ul class="navbar-nav flex-grow-1">
                        
                     </ul>
+                    <div class="navbar-nav">
+
+
+                        @if (ViewContext.RouteData.Values["Controller"].ToString().Equals("SplitWise", StringComparison.OrdinalIgnoreCase) &&
+                        !ViewContext.RouteData.Values["Action"].ToString().Equals("Login", StringComparison.OrdinalIgnoreCase) &&
+                        !ViewContext.RouteData.Values["Action"].ToString().Equals("Register", StringComparison.OrdinalIgnoreCase))
+                        {
+                            <a class="btn btn-dark" style="margin-right: 10px;" asp-area="" asp-controller="SplitWise" asp-action="Groups">Groups</a>
+                            <a class="btn btn-dark" style="margin-right: 10px;" asp-area="" asp-controller="SplitWise" asp-action="Friends">Friends</a>
+                            <a class="btn btn-dark" style="margin-right: 10px;" asp-area="" asp-controller="SplitWise" asp-action="Logout">Logout</a>
+
+                        }
+
+
+                    </div>
                 </div>
             </div>
         </nav>

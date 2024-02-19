@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SplitWiseApp.Models;
 using System.Reflection;
@@ -95,6 +96,39 @@ namespace SplitWiseApp.Controllers
             return View(group);
 
         }
+
+        public IActionResult GetFriends()
+        {
+            int userId=HttpContext.Session.GetInt32("UserId") ??-1;
+            var friends = _apiService.GetFriends(userId);
+            return View(friends);
+        }
+        
+
+        [HttpPost]
+        public IActionResult AddGroupMembers( [FromForm] List<int> friends)
+        {
+            int groupId = HttpContext.Session.GetInt32("GroupId") ?? -1;
+            if (friends != null && friends.Any())
+            {
+                foreach (var friendId in friends)
+                {
+                    GroupMembers groupMember = new GroupMembers
+                    {
+                        GroupId = groupId,
+                        FriendId = friendId
+                    };
+                    _apiService.AddGroupMember(groupMember);
+                }
+                ViewBag.SuccessMessage = "Group members added successfully!";
+            }
+            else
+            {
+                ViewBag.ErrorMessage = "No friends selected to add to the group.";
+            }
+            return RedirectToAction("Friends");
+        }
+
 
 
     }
