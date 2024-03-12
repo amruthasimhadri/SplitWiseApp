@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Payments</title>
+    <!-- Add your CSS styles here -->
+    <h2>Select A Balance To Settle</h2>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            text-align: center;
+        }
+
+        .payment-box {
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            padding: 20px; /* Increase padding to make the boxes longer */
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            .payment-box:hover {
+                background-color: #f0f0f0;
+            }
+
+        .payment-details {
+            font-size: 14px;
+            margin-top: 10px; /* Adjust margin to separate name from details */
+            color: #666;
+        }
+
+        .arrow {
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 15px solid #ccc;
+            margin: 0 auto;
+            margin-bottom: 20px; /* Add margin to separate the arrow from boxes */
+        }
+    </style>
+</head>
+<body>
+    @if (Model == null || Model.Count == 0)
+    {
+        <h1>No payments</h1>
+    }
+    else
+    {
+    <div class="container">
+        <h2>Payments</h2>
+        @foreach (var expenseDetail in Model)
+        {
+            if (expenseDetail != null)
+            {
+                @if (!expenseDetail.Paid)
+                {
+                    <div class="payment-box" onclick="redirectToAction('@expenseDetail.Id')">
+                        <div class="payment-details">@expenseDetail.Name owes @ViewBag.PaidByName</div>
+                        <div>@expenseDetail.Amount</div>
+                    </div>
+                }
+                @*else
+                {
+                    <p>No payment to settle</p>
+                }*@
+            }
+           
+            
+        }
+        <div class="arrow"></div>
+    </div>
+    }
+    <script>
+        function redirectToAction(id) {
+            // Redirect to the controller action with the id parameter
+            window.location.href = '/SplitWise/ShowPayment?id=' + id;
+        }
+    </script>
+</body>
+</html>

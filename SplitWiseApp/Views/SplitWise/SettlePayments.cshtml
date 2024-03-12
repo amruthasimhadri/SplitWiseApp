@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment Details</title>
+    <!-- Add your CSS styles here -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50vh;
+        }
+
+        .payment-box {
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 500px;
+        }
+
+        .payment-details {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+            button[type="submit"]:hover {
+                background-color: #0056b3;
+            }
+
+        .arrow {
+            /* Style for your arrow */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="payment-box">
+            <h2>Payment Details</h2>
+            @if (ViewBag.SuccessMessage != null)
+            {
+                <p style="color: green;">@ViewBag.SuccessMessage</p>
+            }
+            @{
+                int ExpenseId = ViewBag.ExpenseId;
+                List<SplitWiseApp.Models.ExpenseDetails> expenseDetails = Model as List<SplitWiseApp.Models.ExpenseDetails>;
+                if (expenseDetails != null)
+                {
+                    @foreach (var matchingExpense in expenseDetails.Where(e => e.Id == ExpenseId))
+                    {
+                        <div class="payment-details">@matchingExpense.Name &#8594; @ViewBag.PaidByName</div>
+
+                        <div>
+                            <form method="post" action="@Url.Action("RecordPayment", "SplitWise")">
+                                <input type="hidden" name="id" value="@matchingExpense.Id" />
+                                <input type="number" name="amount" value="@matchingExpense.Amount" />
+                                <button type="submit" style="background-color: black; color: white;">Record</button>
+
+                            </form>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p>No payment details available.</p>
+                }
+            }
+            <div class="arrow"></div>
+        </div>
+    </div>
+
+    <script>
+        function recordPayment(id) {
+            // Get the edited amount
+            var editedAmount = document.getElementById('amount-' + id).value;
+            // Set the value of the hidden input
+            document.getElementById('editedAmount').value = editedAmount;
+            // Submit the form
+            document.getElementById('recordForm').submit();
+        }
+    </script>
+</body>
+</html>
+

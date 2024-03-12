@@ -32,6 +32,6 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=SplitWise}/{action=Register}/{id?}");
+    pattern: "{controller=SplitWise}/{action=Login}/{id?}");
 
 app.Run();

@@ -1,49 +1,27 @@
-﻿@*@model SplitWiseApp.Models.GroupModel
+﻿@model SplitWiseApp.Models.GroupModel
+<style>
+    .image-selection {
+        display: flex;
+        flex-wrap: wrap;
+    }
 
-<h1>Create New Group</h1>
+    .image-option {
+        margin-bottom: 10px;
+    }
 
-@if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
-{
-    <div class="alert alert-success" role="alert">
-        @ViewBag.SuccessMessage
-    </div>
-}
+        .image-option img {
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+        }
 
-@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
-{
-    <div class="alert alert-danger" role="alert">
-        @ViewBag.ErrorMessage
-    </div>
-}
+        .image-option.selected img {
+            border: 2px solid blue;
+        }
+</style>
 
-<form method="post">
-    <div class="form-group">
-        <label for="GroupName">Enter Group Name:</label>
-        <input type="text" class="form-control" id="GroupName" name="GroupName" required>
-    </div>
-    <div class="form-group">
-        <label for="TypeId">Select Category:</label>
-        <select class="form-control" id="TypeId" name="TypeId" required>
-            <option value="">Select Category</option>
-            @foreach (var category in ViewBag.Categories)
-            {
-                <option value="@category.Value">@category.Text</option>
-            }
-        </select>
-
-    </div>
-    <button type="submit" class="btn btn-primary">Create Group</button>
-</form>
-<br />
-<a href="@Url.Action("GetFriends", "SplitWise")" class="btn btn-primary">Add Friends to group</a>
-
-*@
-
-@model SplitWiseApp.Models.GroupModel
-<a href="@Url.Action("GetFriends", "SplitWise")" class="btn btn-primary">Add Friends to Group</a>
-<br/>
 <div class="container border rounded p-4">
-    <h1>Create New Group</h1>
+    <h1>Create A Group</h1>
 
     @if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
     {
@@ -61,22 +39,47 @@
 
     <form method="post">
         <div class="form-group">
-            <label for="GroupName">Enter Group Name:</label>
-            <input type="text" class="form-control" id="GroupName" name="GroupName" required>
+            <label for="GroupName">Group Name:</label>
+            <br />
+            <input type="text" class="form-control" id="GroupName" name="GroupName" style="max-width: 300px;" required>
         </div>
+        <br />
         <div class="form-group">
-            <label for="TypeId">Select Category:</label>
-            <select class="form-control" id="TypeId" name="TypeId" required>
-                <option value="">Select Category</option>
+            <label>Select Type:</label>
+            <br />
+            <div class="image-selection">
                 @foreach (var category in ViewBag.Categories)
                 {
-                    <option value="@category.Value">@category.Text</option>
+                    <div class="image-option" data-id="@category.Id">
+                        <img src="@category.ImageUrl" alt="@category.Name" style="width: 50px; height: 50px; margin-right: 40px; cursor: pointer;" />
+                        <br />
+                        <span>@category.Name</span>
+                    </div>
                 }
-            </select>
+            </div>
+            <input type="hidden" id="TypeId" name="TypeId"  />
         </div>
-        <br/>
-        <button type="submit" class="btn btn-primary">Create Group</button>
+
+        <br />
+        <button type="submit" class="btn" style="background-color: black; color: white;">Done</button>
+
     </form>
     <br />
-    <a href="@Url.Action("GetFriends", "SplitWise")" class="btn btn-primary">Add Friends to Group</a>
 </div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var imageOptions = document.querySelectorAll(".image-option");
+        imageOptions.forEach(function (option) {
+            option.addEventListener("click", function () {
+                var id = option.getAttribute("data-id");
+                document.getElementById("TypeId").value = id;
+                imageOptions.forEach(function (opt) {
+                    opt.classList.remove("selected");
+                });
+                option.classList.add("selected");
+            });
+        });
+    });
+</script>

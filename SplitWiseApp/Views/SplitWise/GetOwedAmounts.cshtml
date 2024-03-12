@@ -1,0 +1,140 @@
+﻿@model OwedAmountsViewModel
+
+<div class="container">
+    <h4>Group Review</h4>
+
+    <div class="owed-amounts-container">
+        <div class="owed-details">
+            <h5>Group Name: @Model.GroupName</h5>
+        </div>
+
+        <div class="owed-details">
+            <h5>Total Amount Owed to Me: @Model.TotalOwedToMe</h5>
+        </div>
+        <div class="owed-details">
+            <h5>Total Amount I Owe to Others: @Model.TotalOwedByMe</h5>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+@*<!DOCTYPE html>
+<html>
+<head>
+    <title>Owed Amounts</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .owed-amounts-container {
+            margin-top: 20px;
+        }
+
+        .owed-amount {
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .owed-details {
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            background-color: #000;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+            .btn:hover {
+                background-color: #333;
+            }
+
+        .settle-up-button {
+            background-color: #343a40;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+            .settle-up-button:hover {
+                background-color: #23272b;
+            }
+
+        .lent-statement {
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Owed Amounts</h2>
+
+        <div class="owed-amounts-container">
+            <div class="owed-details">
+                <h3>Group Name: @ViewBag.GroupName</h3>
+            </div>
+           
+            <div class="owed-details">
+                <h3>Total Amount Owed to Me: @ViewBag.TotalOwedToMe</h3>
+            </div>
+            <div class="owed-details">
+                <h3>Total Amount I Owe to Others: @ViewBag.TotalOwedByMe</h3>
+            </div>
+        </div>
+
+      
+    </div>
+</body>
+</html>*@
+
+
+@*@{
+    ViewData["Title"] = "Owed Amounts";
+}
+
+<h2>Owed Amounts</h2>
+
+<div>
+    <h3>Group Name: @ViewBag.GroupName</h3>
+    <h3>Expense Description: @ViewBag.ExpenseDescription</h3>
+    @*<h3>Expense Description: @ViewBag.ExpenseDescription</h3>
+    <h3>Total Amount Owed to Me: @ViewBag.TotalOwedToMe</h3>
+    <h3>Total Amount I Owe to Others: @ViewBag.TotalOwedByMe</h3>
+</div>
+*@

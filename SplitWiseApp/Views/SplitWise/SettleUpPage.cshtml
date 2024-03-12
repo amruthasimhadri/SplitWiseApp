@@ -1,0 +1,31 @@
+﻿@model List<OwedAmountModel>
+
+<h2>Settle Up Page</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>User Name</th>
+            <th>Amount Owed</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var owedAmount in Model)
+        {
+            <tr>
+                <td>@owedAmount.UserName</td>
+                <td>@owedAmount.AmountOwed</td>
+                <td>
+                    <form asp-controller="SplitWise" asp-action="SettleUp" method="post">
+                        <input type="hidden" name="FromUserId" value="currentUserId" />
+                        <input type="hidden" name="ToUserId" value="@owedAmount.UserId" />
+                        <input type="hidden" name="Amount" value="@owedAmount.AmountOwed" />
+                        <button type="submit" class="btn btn-primary">Settle Up</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

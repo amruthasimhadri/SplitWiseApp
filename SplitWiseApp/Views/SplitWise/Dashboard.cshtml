@@ -1,1 +1,76 @@
-﻿<a href="@Url.Action("CreateGroup", "SplitWise")" class="btn btn-primary">Create New Group</a>
+﻿<a href="@Url.Action("CreateGroup", "SplitWise")" class="btn btn-primary" style="background-color: black; color: white;">Create New Group</a>
+
+@model List<GroupTypeModel>
+
+<h2>My Groups</h2>
+
+<div class="group-container">
+    @foreach (var group in Model)
+    {
+        <div class="group-box" data-group-id="@group.Id">
+            <div class="group-info">
+                <img src="@group.ImageUrl" alt="Group Image" class="group-image" />
+                <div class="group-text">
+                    <h3>@group.Name</h3>
+                    <p><strong>Group Type:</strong> @group.GroupType</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .group-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .group-box {
+        border: 1px solid #ccc;
+        padding: 20px;
+        width: 300px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    .group-info {
+        display: flex;
+        align-items: center;
+    }
+
+    .group-image {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        margin-right: 20px;
+    }
+
+    .group-text {
+        text-align: left;
+    }
+
+        .group-text h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .group-text p {
+            margin: 0;
+        }
+</style>
+
+
+<script>
+    document.querySelectorAll('.group-box').forEach(box => {
+        box.addEventListener('click', function () {
+            // Get the groupId from the data-group-id attribute
+            var groupId = this.getAttribute('data-group-id');
+
+            // Redirect the user to the desired URL with the groupId as a parameter
+            window.location.href = '/SplitWise/GetExpenseOfGroup?groupId=' + groupId;
+        });
+    });
+</script>
+

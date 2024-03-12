@@ -1,0 +1,72 @@
+﻿
+@model List<SplitWiseApp.Models.Friends>
+<form method="post" asp-action="AddFriend">
+
+    <h4>Add New Friend</h4>
+
+    <div class="form-row">
+
+        <div class="form-group col-md-6">
+
+            <label for="FriendName">Enter Name:</label>
+
+            <input type="text" id="FriendName" name="FriendName" class="form-control" required />
+
+        </div>
+
+        <div class="form-group col-md-6">
+
+            <label for="FriendEmail">Enter Email:</label>
+
+            <input type="email" id="FriendEmail" name="FriendEmail" class="form-control" required />
+
+        </div>
+
+    </div>
+
+    <br />
+
+    <button type="submit" class="btn btn-dark">Add Friend</button>
+
+</form>
+<br />
+@if (!string.IsNullOrEmpty(ViewBag.Error))
+
+{
+
+    <div class="alert alert-danger" role="alert">
+
+        @ViewBag.Error
+
+    </div>
+
+}
+
+@if (Model != null && Model.Any())
+
+{
+
+    <div class="list-group">
+
+        <h4 class="list-group-item list-group-item-dark">My Friends</h4>
+
+        @foreach (var friend in Model)
+
+        {
+
+            <div class="list-group-item">@friend.FriendName</div>
+
+        }
+
+    </div>
+
+}
+
+else
+
+{
+
+    <p>No friends found with the entered email.</p>
+
+}
+

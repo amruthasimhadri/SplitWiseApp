@@ -1,0 +1,95 @@
+﻿@model List<ExpenseDetails>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Expense Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);*/
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .owed-amount {
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .individual-owed {
+            margin-bottom: 10px;
+        }
+
+        .settle-up-button {
+            background-color: black;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+            .settle-up-button:hover {
+                background-color: #333;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>@Model.FirstOrDefault()?.GroupName</h2>
+        <div class="description">
+           Description: @ViewBag.Description
+        </div>
+        <div class="totalAMount">
+            Total Expense Amount: @ViewBag.TotalAmount
+        </div>
+        <!-- Display the overall owed amount -->
+        <div class="owed-amount">
+            Overall owed amount: @Math.Abs(@ViewBag.OverallOwed)
+        </div>
+
+        <!-- Display individual owed amounts -->
+        @foreach (var kvp in ViewBag.IndividualOwedAmounts)
+        {
+            <div class="individual-owed">
+                @kvp.Key owes @ViewBag.PaidByName Rs. @Math.Abs(kvp.Value)
+            </div>
+        }
+
+        <!-- Settle up button -->
+        <button type="button" class="settle-up-button" onclick="settleUp()">Settle Up</button>
+        <br />
+        <div class="lent-statement">
+            @ViewBag.PaidByName lent Rs. @Math.Abs(@ViewBag.PaidAmount)
+        </div>
+    </div>
+
+    <!-- JavaScript section -->
+    <script>
+        function settleUp() {
+            // Get the ExpenseId from ViewBag
+            var expenseId = @ViewBag.ExpenseId;
+            console.log(expenseId);
+            // Redirect to the controller action with the ExpenseId parameter
+            window.location.href = '/SplitWise/GetPendingPayments?expenseId=' + expenseId;
+
+        }
+    </script>
+</body>
+</html>
