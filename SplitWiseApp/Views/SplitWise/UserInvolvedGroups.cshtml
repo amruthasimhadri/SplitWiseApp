@@ -1,8 +1,6 @@
-﻿<a href="@Url.Action("CreateGroup", "SplitWise")" class="btn btn-primary" style="background-color: black; color: white;">Create New Group</a>
-<a href="@Url.Action("UserInvolvedGroups", "SplitWise")" class="btn btn-primary" style="background-color: black; color: white;">Involved Groups</a>
-@model List<GroupTypeModel>
+﻿@model List<GroupTypeModel>
 
-<h2>My Groups</h2>
+<h2>My Involved Groups</h2>
 
 <div class="group-container">
     @foreach (var group in Model)
@@ -11,7 +9,7 @@
             <div class="group-info">
                 <img src="@group.ImageUrl" alt="Group Image" class="group-image" />
                 <div class="group-text">
-                    <h4>@group.Name</h4>
+                    <h3>@group.Name</h3>
                     <p><strong>Group Type:</strong> @group.GroupType</p>
                 </div>
             </div>
@@ -51,7 +49,7 @@
         text-align: left;
     }
 
-        .group-text h4 {
+        .group-text h3 {
             margin-top: 0;
             margin-bottom: 10px;
         }
@@ -69,8 +67,7 @@
             var groupId = this.getAttribute('data-group-id');
 
             // Redirect the user to the desired URL with the groupId as a parameter
-            window.location.href = '/SplitWise/GetExpenseOfGroup?groupId=' + groupId;
+            window.location.href = '/SplitWise/GetExpenseOfGroup_Involved?groupId=' + groupId;
         });
     });
 </script>
-

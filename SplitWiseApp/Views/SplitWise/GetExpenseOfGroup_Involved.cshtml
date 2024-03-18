@@ -1,0 +1,138 @@
+﻿<a href="@Url.Action("UserInvolvedGroups", "SplitWise")" class="btn btn-primary" style="background-color: black; color: white;">Back To Involved Groups</a>
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Involved Groups Expense Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .settle-up-button {
+            background-color: black;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+            .settle-up-button:hover {
+                background-color: #333;
+            }
+    </style>
+</head>
+<body>
+    <input type="hidden" id="groupId" value="@ViewBag.GroupId" />
+   @* <button type="button" class="add-groupMembers-button" onclick="addGroupMembers()">Add Group Members</button>*@
+    <br />
+   @* <button type="button" class="add-expense-button" onclick="addExpense()">Add Expense</button>
+    <br />*@
+    <br />
+    @if (Model.Count > 0)
+    {
+        <table>
+            <tr>
+                <th>Description</th>
+                <th>Total Expense Amount</th>
+                <th>Overall Owed Amount</th>
+                <th>Individual Owed Amount</th>
+                <th>Paid By</th>
+               @* <th>Settle Up</th>*@
+
+            </tr>
+            @foreach (var expense in Model)
+            {
+                <tr>
+                    <td>@expense.Description</td>
+                    <td>@expense.TotalAmount</td>
+                    <td>@Math.Abs(expense.OverallOwed)</td>
+                    <td>
+                        @foreach (var kvp in expense.IndividualOwedAmounts)
+                        {
+                            <div>@kvp.Key owes @expense.PaidByName Rs. @Math.Abs(kvp.Value)</div>
+                        }
+                    </td>
+                    <td>@expense.PaidByName lent Rs. @Math.Abs(expense.PaidAmount)</td>
+                   @* <td>
+                       <button type="button" class="settle-up-button" onclick="settleUp(@expense.ExpenseId)">Settle Up</button>
+                    </td>*@
+
+                </tr>
+
+            }
+        </table>
+
+
+        <div id="owedAmountsPartial">
+        </div>
+        @* <div id="totalGroupAmountSum">
+    Total Group Amount Sum: @ViewBag.TotalGroupAmountSum
+    </div>*@
+
+    }
+    else
+    {
+        <h3>No Expense Details Added</h3>
+    }
+
+
+   @* <script>
+        function addGroupMembers() {
+            window.location.href = '/SplitWise/GetFriends';
+        }
+        function addExpense() {
+            var groupId = document.getElementById("groupId").value;
+            window.location.href = '/SplitWise/AddExpense?groupId=' + groupId;
+        }
+
+        function settleUp(expenseId) {
+            // Redirect to the controller action with the ExpenseId parameter
+            window.location.href = '/SplitWise/GetPendingPayments?expenseId=' + expenseId;
+        }
+    </script>*@
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            console.log("AJAX request started...");
+            $.ajax({
+                url: '/SplitWise/GetOwedAmounts',
+                type: 'GET',
+                success: function (result) {
+                    console.log("AJAX request successful!");
+                    $('#owedAmountsPartial').html(result);
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX request failed:", error);
+                    alert('Error loading owed amounts.');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
+
+

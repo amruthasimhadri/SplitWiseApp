@@ -131,10 +131,10 @@ namespace SplitWiseApp.Models
             return friends;
         }
 
-        public void AddExpenseMembers(GroupMembers groupMember)
+        public void AddExpenseMembers(ExpenseMembers expenseMember)
         {
-            string apiUrl = "http://localhost:5001/api/SplitWise/AddGroupMembers";
-            var response = _httpClient.PostAsJsonAsync(apiUrl, groupMember).Result;
+            string apiUrl = "http://localhost:5001/api/SplitWise/AddExpenseMembers";
+            var response = _httpClient.PostAsJsonAsync(apiUrl, expenseMember).Result;
             response.EnsureSuccessStatusCode();
         }
         //------------------------------------------------------
@@ -252,6 +252,27 @@ namespace SplitWiseApp.Models
             var response = _httpClient.PostAsJsonAsync(apiUrl, model).Result;
         }
 
+        //Expenses of Group Involved
+
+        public List<GroupTypeModel> GetUserInvolvedGroups(int UserId)
+        {
+            string apiUrl = $"http://localhost:5001/api/SplitWise/GetUserInvolvedGroups?userId={UserId}";
+            var response = _httpClient.GetAsync(apiUrl).Result;
+            response.EnsureSuccessStatusCode();
+            var jsonString = response.Content.ReadAsStringAsync().Result;
+            var groups = JsonConvert.DeserializeObject<List<GroupTypeModel>>(jsonString);
+            return groups;
+
+        }
+        public List<ExpenseDetails> GetExpenseOfGroupInvolved(/*int groupId,*/ int userId)
+        {
+            string apiUrl = $"http://localhost:5001/api/SplitWise/GetExpenseOfGroupInvolved?userId={userId}";
+            var response = _httpClient.GetAsync(apiUrl).Result;
+            response.EnsureSuccessStatusCode();
+            var jsonString = response.Content.ReadAsStringAsync().Result;
+            var expenseDetails = JsonConvert.DeserializeObject<List<ExpenseDetails>>(jsonString);
+            return expenseDetails;
+        }
 
     }
 }

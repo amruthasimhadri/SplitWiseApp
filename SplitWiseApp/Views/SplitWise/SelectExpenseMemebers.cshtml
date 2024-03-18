@@ -1,17 +1,9 @@
-﻿@model List<SplitWiseApp.Models.Friends>
+﻿@*@model List<SplitWiseApp.Models.Friends>
 
-<h3> Group Members</h3>
-
-<div class="text-center">
-
-    <!-- Add Bootstrap class for center alignment -->
-
-    <a href="@Url.Action("AddFriend", "SplitWise")" class="btn btn-dark">Add New Friends</a>
-
-</div>
-
+<h3> Expense Members</h3>
 
 <h4>Add Friends To Expense</h4>
+<h6>(Note: Must Include paid member in the expense)</h6>
 
 @if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
 
@@ -37,7 +29,7 @@
 
 }
 
-<form method="post" asp-action="AddGroupMembers">
+<form method="post" asp-action="AddExpeneMembers">
 
     @foreach (var friend in Model)
 
@@ -58,3 +50,74 @@
     <button type="submit" class="btn" style="background-color: black; color: white;">Ok</button>
 
 </form>
+<script>
+    function validateForm() {
+        var checkboxes = document.querySelectorAll('.form-check-input');
+        var isChecked = false;
+        checkboxes.forEach(function (checkbox) {
+            if (checkbox.checked) {
+                isChecked = true;
+            }
+        });
+        if (!isChecked) {
+            alert('Please select at least one friend.');
+            return false; // Prevent form submission
+        }
+        return true;
+    }
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- jquery validation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
+*@
+@model List<SplitWiseApp.Models.Friends>
+
+<h3>Expense Members</h3>
+
+<h4>Add Friends To Expense</h4>
+<h6>(Note: Must Include paid member in the expense)</h6>
+
+@if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
+{
+    <div class="alert alert-success" role="alert">
+        @ViewBag.SuccessMessage
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.ErrorMessage
+    </div>
+}
+
+<form id="expenseForm" method="post" asp-action="AddExpeneMembers">
+
+    @foreach (var friend in Model)
+    {
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input friend-checkbox" id="friend-@friend.FriendId" name="friends" value="@friend.FriendId">
+            <label class="form-check-label" for="friend-@friend.FriendId">@friend.FriendName</label>
+        </div>
+    }
+
+    <br />
+    <button type="submit" class="btn" style="background-color: black; color: white;">Ok</button>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#expenseForm').submit(function (event) {
+            var checked = $('.friend-checkbox:checked').length > 0;
+            if (!checked) {
+                alert('Please select at least one friend.');
+                event.preventDefault(); // Prevent form submission
+            }
+        });
+    });
+</script>
+

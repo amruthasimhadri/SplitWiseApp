@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SplitWiseApp.Models;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace SplitWiseApp.Controllers
 {
@@ -107,8 +108,8 @@ namespace SplitWiseApp.Controllers
             return PartialView("GetOwedAmounts", model);
         }
 
-
-        public IActionResult GetExpenseOfGroup(int groupId)
+        
+        public IActionResult GetExpenseOfGroup(int groupId) //all expenses of the group
         {
             int UserId = HttpContext.Session.GetInt32("UserId") ?? -1;
             ViewBag.GroupId = groupId; // Pass groupId to the view
@@ -160,6 +161,7 @@ namespace SplitWiseApp.Controllers
                     }
                 }
                 ViewBag.TotalGroupAmountSum = TotalGroupAmount; //added
+                ViewBag.UserId = UserId;
 
                 // Create view model for the expense group
                 var expenseGroup = new ExpenseGroupViewModel
@@ -230,7 +232,7 @@ namespace SplitWiseApp.Controllers
         [HttpPost]
         public IActionResult AddGroupMembers([FromForm] List<int> friends)
         {
-            int groupId = HttpContext.Session.GetInt32("GroupIdOfExpense") ?? -1;
+            int groupId = HttpContext.Session.GetInt32("GroupId") ?? -1;
             if (friends != null && friends.Any())
             {
                 foreach (var friendId in friends)
@@ -281,19 +283,12 @@ namespace SplitWiseApp.Controllers
                 return RedirectToAction("AddFriend");
             }
         }
-        //------------------------Seelct Expense Memebers-------------
-        [HttpGet]
-        public IActionResult SelectExpenseMemebers(int groupId)
-        {
-            int userId = HttpContext.Session.GetInt32("UserId") ?? -1;
-            var Expensefriends = _apiService.GetExpenseFriends(groupId,userId);
-            return View("SelectExpenseMemebers", Expensefriends);
-
-        }
+        
         //-----------Add Expense---------------------------
         [HttpGet]
         public IActionResult AddExpense(int groupId)
         {
+            HttpContext.Session.SetInt32("GroupId", groupId);
             int userId = HttpContext.Session.GetInt32("UserId") ?? -1;
             AddExpense expenseModel = _apiService.GetExpenseModel(groupId, userId);
             expenseModel.GroupId = groupId;
@@ -313,11 +308,52 @@ namespace SplitWiseApp.Controllers
             int MyExpenseId = expenseId.Value;
             HttpContext.Session.SetInt32("expenseId", MyExpenseId);
 
-            _apiService.AddExpenseMembers(expenseId.Value);
+           // _apiService.AddExpenseMembers(expenseId.Value); ( commented by me)
 
-            return RedirectToAction("ViewExpenseDetails", new { expenseId = expenseId.Value });
+            //(changed)  return RedirectToAction("ViewExpenseDetails", new { expenseId = expenseId.Value });
+            return RedirectToAction("SelectExpenseMemebers");
         }
-        public IActionResult ViewExpenseDetails(int expenseId)
+        //-----------------------------------------
+        //------------------------Seelct Expense Memebers-------------
+        [HttpGet]
+        public IActionResult SelectExpenseMemebers(/*int groupId*/)
+        {
+             int groupId = HttpContext.Session.GetInt32("GroupId") ?? -1;
+
+            int userId = HttpContext.Session.GetInt32("UserId") ?? -1;
+            var Expensefriends = _apiService.GetExpenseFriends(groupId, userId);
+             return View("SelectExpenseMemebers", Expensefriends);
+           // return RedirectToAction("AddExpeneMembers",Expensefriends);
+
+        }
+        [HttpPost]
+        public IActionResult AddExpeneMembers([FromForm] List<int> friends) //selected expense members will be inserted into table
+        {
+            int expenseId = HttpContext.Session.GetInt32("expenseId") ?? -1;
+            if (friends != null && friends.Any())
+            {
+                foreach (var friendId in friends)
+                {
+                    ExpenseMembers expenseMember = new ExpenseMembers
+                    {
+                        ExpenseId = expenseId,
+                        FriendId = friendId
+                    };
+                    _apiService.AddExpenseMembers(expenseMember);
+                }
+                ViewBag.SuccessMessage = "Group members added successfully!";
+                _apiService.AddExpenseMembers(expenseId); //added
+            }
+            else
+            {
+                ViewBag.ErrorMessage = "No friends selected to add to the group.";
+            }
+            // return RedirectToAction("AddExpense", new { groupId = groupId });
+            return RedirectToAction("ViewExpenseDetails", new { expenseId = expenseId });
+        }
+
+        //-----------------------individual expense before settleup-------------------
+        public IActionResult ViewExpenseDetails(int expenseId) 
         {           
             int userId = HttpContext.Session.GetInt32("UserId") ?? -1;
             List<ExpenseDetails> expenseDetails = _apiService.GetExpenseDetails(expenseId, userId);//4 e to E in 
@@ -360,7 +396,9 @@ namespace SplitWiseApp.Controllers
             ViewBag.IndividualOwedAmounts = individualOwedAmounts;
             ViewBag.PaidByName = paidByName;
             ViewBag.PaidAmount = paidAmount;
-            ViewBag.ExpenseId = expenseId;           
+            ViewBag.ExpenseId = expenseId;
+            int groupId = HttpContext.Session.GetInt32("NewGroupId") ?? -1; 
+            ViewBag.GroupId = groupId;
             return View("ViewExpenseDetails", expenseDetails);
         }
 
@@ -413,6 +451,167 @@ namespace SplitWiseApp.Controllers
             //return View();
             int? expenseId = HttpContext.Session.GetInt32("expenseId") ?? -1;
             return RedirectToAction("ViewExpenseDetails", new { expenseId = expenseId.Value });
+
+        }
+
+        //------------------------------------Get Expenses Of GroupInvolved------------------------------
+        public IActionResult UserInvolvedGroups()
+        {
+            int UserId = HttpContext.Session.GetInt32("UserId") ?? -1;
+            var groups = _apiService.GetUserInvolvedGroups(UserId);
+            return View(groups);
+
+
+        }
+        //below  action is same as GetExpenseOfGroup
+        public IActionResult GetExpenseOfGroup_Involved(int groupId) //all expenses of the group
+        {
+            int UserId = HttpContext.Session.GetInt32("UserId") ?? -1;
+            ViewBag.GroupId = groupId; // Pass groupId to the view
+            HttpContext.Session.SetInt32("NewGroupId", groupId);
+            List<ExpenseDetails> expenseDetails = _apiService.GetExpenseOfGroup(groupId, UserId);
+
+
+            var groupedExpenses = expenseDetails.GroupBy(e => e.ExpenseId);
+
+            // List to hold grouped expense details
+            List<ExpenseGroupViewModel> expenseGroups = new List<ExpenseGroupViewModel>();
+
+            foreach (var group in groupedExpenses)
+            {
+                decimal overallOwed = 0;
+                Dictionary<string, decimal> individualOwedAmounts = new Dictionary<string, decimal>();
+                string paidByName = ""; // Name of the person who paid for the expense
+                decimal paidAmount = 0; // Total amount paid by the person who paid for the expense
+                string Description = "";
+                decimal TotalAmount = 0;
+                // Get the ExpenseId from the group
+                int expenseId = group.Key;
+                decimal TotalGroupAmount = 0;
+
+                foreach (var expense in group)
+                {
+                    TotalGroupAmount += expense.TotalAmount;
+                    Description = expense.ExpenseDescription;
+                    TotalAmount = expense.TotalAmount;
+                    if (expense.PaidBy == expense.MemberId)
+                    {
+                        // If the PaidBy is the same as the MemberId, this is the person who paid for the expense
+                        paidByName = expense.Name;
+                        paidAmount += expense.Amount;
+                        continue;
+                    }
+
+                    decimal owedAmount = expense.Paid ? expense.Amount : -expense.Amount;
+
+                    overallOwed += owedAmount;
+
+                    if (individualOwedAmounts.ContainsKey(expense.Name))
+                    {
+                        individualOwedAmounts[expense.Name] += owedAmount;
+                    }
+                    else
+                    {
+                        individualOwedAmounts.Add(expense.Name, owedAmount);
+                    }
+                }
+                ViewBag.TotalGroupAmountSum = TotalGroupAmount; //added
+
+                // Create view model for the expense group
+                var expenseGroup = new ExpenseGroupViewModel
+                {
+                    ExpenseId = expenseId, // Assign the ExpenseId obtained from the group
+                    OverallOwed = overallOwed,
+                    IndividualOwedAmounts = individualOwedAmounts,
+                    PaidByName = paidByName,
+                    PaidAmount = paidAmount,
+                    GroupId = groupId,
+                    Description = Description,
+                    TotalAmount = TotalAmount,
+                    //TotalGroupAmount=TotalGroupAmount,
+                };
+
+                expenseGroups.Add(expenseGroup);
+            }
+
+            return View("GetExpenseOfGroup_Involved", expenseGroups);
+
+
+        }
+
+        //---not using below action
+        public IActionResult GetExpenseOfGroupInvolved(/*int groupId*/) //all expenses of the group
+        {
+            int UserId = HttpContext.Session.GetInt32("UserId") ?? -1;
+           // ViewBag.GroupId = groupId; // Pass groupId to the view
+           // HttpContext.Session.SetInt32("NewGroupId", groupId);
+            List<ExpenseDetails> expenseDetails = _apiService.GetExpenseOfGroupInvolved(/*groupId,*/ UserId);
+
+
+            var groupedExpenses = expenseDetails.GroupBy(e => e.ExpenseId);
+
+            // List to hold grouped expense details
+            List<ExpenseGroupViewModel> expenseGroups = new List<ExpenseGroupViewModel>();
+
+            foreach (var group in groupedExpenses)
+            {
+                decimal overallOwed = 0;
+                Dictionary<string, decimal> individualOwedAmounts = new Dictionary<string, decimal>();
+                string paidByName = ""; // Name of the person who paid for the expense
+                decimal paidAmount = 0; // Total amount paid by the person who paid for the expense
+                string Description = "";
+                decimal TotalAmount = 0;
+                // Get the ExpenseId from the group
+                int expenseId = group.Key;
+                decimal TotalGroupAmount = 0;
+
+                foreach (var expense in group)
+                {
+                    TotalGroupAmount += expense.TotalAmount;
+                    Description = expense.ExpenseDescription;
+                    TotalAmount = expense.TotalAmount;
+                    if (expense.PaidBy == expense.MemberId)
+                    {
+                        // If the PaidBy is the same as the MemberId, this is the person who paid for the expense
+                        paidByName = expense.Name;
+                        paidAmount += expense.Amount;
+                        continue;
+                    }
+
+                    decimal owedAmount = expense.Paid ? expense.Amount : -expense.Amount;
+
+                    overallOwed += owedAmount;
+
+                    if (individualOwedAmounts.ContainsKey(expense.Name))
+                    {
+                        individualOwedAmounts[expense.Name] += owedAmount;
+                    }
+                    else
+                    {
+                        individualOwedAmounts.Add(expense.Name, owedAmount);
+                    }
+                }
+                ViewBag.TotalGroupAmountSum = TotalGroupAmount; //added
+
+                // Create view model for the expense group
+                var expenseGroup = new ExpenseGroupViewModel
+                {
+                    ExpenseId = expenseId, // Assign the ExpenseId obtained from the group
+                    OverallOwed = overallOwed,
+                    IndividualOwedAmounts = individualOwedAmounts,
+                    PaidByName = paidByName,
+                    PaidAmount = paidAmount,
+                   // GroupId = groupId,
+                    Description = Description,
+                    TotalAmount = TotalAmount,
+                    //TotalGroupAmount=TotalGroupAmount,
+                };
+
+                expenseGroups.Add(expenseGroup);
+            }
+
+            return View("GetExpenseOfGroupInvolved", expenseGroups);
+
 
         }
     }

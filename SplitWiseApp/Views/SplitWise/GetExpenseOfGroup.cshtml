@@ -43,7 +43,10 @@
 </head>
 <body>
     <input type="hidden" id="groupId" value="@ViewBag.GroupId" />
-    <button type="button" class="add-expense-button" onclick="addExpense()">Add Expense</button>
+    <button type="button" class="add-groupMembers-button"  style="background-color: black; color: white;" onclick="addGroupMembers()">Add Group Members</button>
+    <br />
+    <br />
+    <button type="button" class="add-expense-button" style="background-color: black; color: white;" onclick="addExpense()">Add Expense</button>
     <br />
     <br />
     @if (Model.Count > 0)
@@ -54,7 +57,7 @@
                 <th>Total Expense Amount</th>
                 <th>Overall Owed Amount</th>
                 <th>Individual Owed Amount</th>
-                <th>Self Lent</th>
+                <th>Paid By</th>
                 <th>Settle Up</th>
                 
             </tr>
@@ -95,6 +98,9 @@
 
 
     <script>
+        function addGroupMembers(){
+            window.location.href = '/SplitWise/GetFriends?groupId=' + groupId;
+        }
         function addExpense() {
             var groupId = document.getElementById("groupId").value;
             window.location.href = '/SplitWise/AddExpense?groupId=' + groupId;
@@ -262,108 +268,3 @@
 
 
 
-@*my first view by ammu*@
-@*@model List<ExpenseGroupViewModel>
-
-<input type="hidden" id="groupId" value="@ViewBag.GroupId" />
-<button type="button" class="add-expense-button" onclick="addExpense()">Add Expense</button>
-<script>
-    function addExpense() {
-        var groupId = document.getElementById("groupId").value;
-        window.location.href = '/SplitWise/AddExpense?groupId=' + groupId;
-    }
-</script>
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Expense Details</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 5px;
-            text-align: center;
-        }
-
-        h2 {
-            color: #333;
-        }
-
-        .owed-amount {
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
-        .individual-owed {
-            margin-bottom: 10px;
-        }
-
-        .settle-up-button {
-            background-color: black;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 20px;
-        }
-
-            .settle-up-button:hover {
-                background-color: #333;
-            }
-    </style>
-</head>
-<body>
-    @foreach (var expense in Model)
-    {
-        <div class="container">
-            <h2>Expense Details</h2>
-            <div class="Description">
-                Description: @expense.Description
-            </div>
-            <div class="TotalAmount">
-                Total Expense Amount: @expense.TotalAmount
-            </div>
-
-            <div class="owed-amount">
-                Overall owed amount: @Math.Abs(expense.OverallOwed)
-            </div>
-
-
-            @foreach (var kvp in expense.IndividualOwedAmounts)
-            {
-                <div class="individual-owed">
-                    @kvp.Key owes @expense.PaidByName Rs. @Math.Abs(kvp.Value)
-                </div>
-            }
-
-            <!-- Settle up button -->
-            <button type="button" class="settle-up-button" onclick="settleUp(@expense.ExpenseId)">Settle Up</button>
-            <br />
-            <div class="lent-statement">
-                @expense.PaidByName lent Rs. @Math.Abs(expense.PaidAmount)
-            </div>
-        </div>
-    }
-
-
-    <script>
-        function settleUp(expenseId) {
-            // Redirect to the controller action with the ExpenseId parameter
-            window.location.href = '/SplitWise/GetPendingPayments?expenseId=' + expenseId;
-        }
-    </script>
-</body>
-</html>
-*@

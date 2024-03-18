@@ -52,6 +52,9 @@
 </head>
 <body>
     <div class="container">
+        <button type="button" onclick="ExpensesOfGroup()">Back to All Expenses</button>
+        <br />
+        <br />
         <h2>@Model.FirstOrDefault()?.GroupName</h2>
         <div class="description">
            Description: @ViewBag.Description
@@ -75,9 +78,9 @@
         <!-- Settle up button -->
         <button type="button" class="settle-up-button" onclick="settleUp()">Settle Up</button>
         <br />
-        <div class="lent-statement">
+        @*<div class="lent-statement">
             @ViewBag.PaidByName lent Rs. @Math.Abs(@ViewBag.PaidAmount)
-        </div>
+        </div>*@
     </div>
 
     <!-- JavaScript section -->
@@ -89,6 +92,10 @@
             // Redirect to the controller action with the ExpenseId parameter
             window.location.href = '/SplitWise/GetPendingPayments?expenseId=' + expenseId;
 
+        }
+        function ExpensesOfGroup() {
+            var groupId = @ViewBag.GroupId;
+            window.location.href = '/SplitWise/GetExpenseOfGroup?groupId=' + groupId;
         }
     </script>
 </body>

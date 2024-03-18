@@ -5,6 +5,11 @@
         public int GroupId { get; set; }
         public int FriendId { get; set; }
     }
+    public class ExpenseMembers
+    {
+        public int ExpenseId { get; set; }
+        public int FriendId { get; set; }
+    }
 
     public class Friends
     {

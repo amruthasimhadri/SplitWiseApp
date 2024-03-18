@@ -213,12 +213,12 @@ namespace SplitWiseApi.Controllers
 
         [HttpPost]
         [Route("AddExpenseMembers")]
-        public IActionResult AddExpenseMembers([FromBody] GroupMembers groupMember)
+        public IActionResult AddExpenseMembers([FromBody] ExpenseMembers expenseMember)
         {
 
-            SqlCommand cmd = new SqlCommand("INSERT INTO GroupMembers (GroupId, FriendId) VALUES (@GroupId, @FriendId)", con);
-            cmd.Parameters.AddWithValue("@GroupId", groupMember.GroupId);
-            cmd.Parameters.AddWithValue("@FriendId", groupMember.FriendId);
+            SqlCommand cmd = new SqlCommand("INSERT INTO SelectExpenseMembers (ExpenseId, FriendId) VALUES (@ExpenseId, @FriendId)", con);
+            cmd.Parameters.AddWithValue("@ExpenseId", expenseMember.ExpenseId);
+            cmd.Parameters.AddWithValue("@FriendId", expenseMember.FriendId);
             cmd.ExecuteNonQuery();
             return Ok();
 
@@ -315,11 +315,13 @@ namespace SplitWiseApi.Controllers
 
             return Ok(expenseId);
         }
+
+        
         [HttpGet]
         [Route("AddExpenseMembers")]
-        public ActionResult AddExpenseMembers(int expenseId)
+        public ActionResult AddExpenseMembers(int expenseId) //Insert to Table
         {
-            SqlCommand cmd = new SqlCommand("AddExpenseMembers", con);
+            SqlCommand cmd = new SqlCommand("AddExpenseMembers_Test", con); // changed sp name
             cmd.CommandType = System.Data.CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@expenseId", expenseId);
             cmd.ExecuteNonQuery();
@@ -367,6 +369,63 @@ namespace SplitWiseApi.Controllers
             cmd.Parameters.AddWithValue("@Amount", model.Amount);           
             cmd.ExecuteNonQuery();
         }
+
+
+        //------------------------ Get Expense Details of Groups Involved
+        [HttpGet]
+        [Route("GetUserInvolvedGroups")]
+        public IEnumerable<GroupTypeModel> GetUserInvolvedGroups(int userId)
+        {
+            List<GroupTypeModel> groups = new List<GroupTypeModel>();
+            SqlCommand cmd = new SqlCommand("[GetUserInvolvedGroups_Test]", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@UserId", userId);
+            SqlDataReader r = cmd.ExecuteReader();
+            while (r.Read())
+            {
+                groups.Add(new GroupTypeModel
+                {
+                    Id = r.GetInt32("Id"),
+                    Name = r.GetString("GroupName"),
+                    ImageUrl = r.GetString("ImageUrl"),
+                    GroupType = r.GetString("TypeName")
+                });
+
+            }
+            return groups;
+        }
+
+        [HttpGet]
+        [Route("GetExpenseOfGroupInvolved")]
+        public IEnumerable<ExpenseDetails> GetExpenseOfGroupInvolved(int groupId, int userId)
+        {
+
+            List<ExpenseDetails> expenseDetails = new List<ExpenseDetails>();
+            SqlCommand cmd = new SqlCommand("[GetExpenseDetailsOfUser_InvolvedGroups]", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+           // cmd.Parameters.AddWithValue("@GroupId", groupId);
+            cmd.Parameters.AddWithValue("@UserId", userId);
+            SqlDataReader rdr = cmd.ExecuteReader();
+            while (rdr.Read())
+            {
+                expenseDetails.Add(new ExpenseDetails
+                {
+                    Id = (int)rdr["Id"],
+                    Name = rdr["Name"].ToString(),
+                    Amount = (decimal)rdr["Amount"],
+                    Paid = (bool)rdr["Paid"],
+                    GroupName = (string)rdr["GroupName"],
+                    PaidBy = (int)rdr["PaidBy"],
+                    MemberId = (int)rdr["MemberId"],
+                    ExpenseId = (int)rdr["ExpenseId"],
+                    ExpenseDescription = (string)rdr["Description"],
+                    TotalAmount = (decimal)rdr["TotalAmount"],
+
+                });
+            }
+            return expenseDetails;
+        }
+
     }
 }
 
