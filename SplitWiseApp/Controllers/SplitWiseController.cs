@@ -221,13 +221,18 @@ namespace SplitWiseApp.Controllers
 
         }
 
-        public IActionResult GetFriends()
+        public IActionResult GetFriendsToAddInGroup(int groupId)
         {
             int userId = HttpContext.Session.GetInt32("UserId") ?? -1;
-            var friends = _apiService.GetFriends(userId);
+            var friends = _apiService.GetFriendsToAddInGroup(userId,groupId);
+            return View("GetFriends", friends);
+        }
+        public IActionResult GetFriends(int groupId)
+        {
+            int userId = HttpContext.Session.GetInt32("UserId") ?? -1;
+            var friends = _apiService.GetFriendsToAddInGroup(userId, groupId);
             return View(friends);
         }
-
 
         [HttpPost]
         public IActionResult AddGroupMembers([FromForm] List<int> friends)

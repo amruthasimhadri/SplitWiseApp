@@ -154,6 +154,28 @@ namespace SplitWiseApi.Controllers
         }
 
         //-------------------------------
+        [HttpGet]
+        [Route("GetFriendsToAddInGroup")]
+        public IEnumerable<Friends> GetFriendsToAddInGroup(int userId,int groupId)
+        {
+            List<Friends> friends = new List<Friends>();
+            SqlCommand cmd = new SqlCommand("[GetFriends_Test]", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@UserId", userId);
+            cmd.Parameters.AddWithValue("GroupId", groupId);
+            SqlDataReader rdr = cmd.ExecuteReader();
+            while (rdr.Read())
+            {
+                friends.Add(new Friends
+                {
+                    FriendId = (int)rdr["FriendId"],
+                    FriendName = rdr["Name"].ToString()
+
+                });
+            }
+            return friends;
+        }
+
 
         [HttpGet]
         [Route("GetFriends")]

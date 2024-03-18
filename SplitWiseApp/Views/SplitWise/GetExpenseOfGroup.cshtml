@@ -99,7 +99,8 @@
 
     <script>
         function addGroupMembers(){
-            window.location.href = '/SplitWise/GetFriends?groupId=' + groupId;
+            var groupId = document.getElementById("groupId").value;
+            window.location.href = '/SplitWise/GetFriendsToAddInGroup?groupId=' + groupId;
         }
         function addExpense() {
             var groupId = document.getElementById("groupId").value;

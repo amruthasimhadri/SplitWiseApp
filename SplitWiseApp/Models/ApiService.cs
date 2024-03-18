@@ -103,7 +103,15 @@ namespace SplitWiseApp.Models
 
 
         //-----------------------
-
+        public List<Friends> GetFriendsToAddInGroup(int userId,int groupId)
+        {
+            string apiUrl = $"http://localhost:5001/api/SplitWise/GetFriendsToAddInGroup?userId={userId}&groupId={groupId}";
+            var response = _httpClient.GetAsync(apiUrl).Result;
+            response.EnsureSuccessStatusCode();
+            var jsonString = response.Content.ReadAsStringAsync().Result;
+            var friends = JsonConvert.DeserializeObject<List<Friends>>(jsonString);
+            return friends;
+        }
         public List<Friends> GetFriends(int userId)
         {
              string apiUrl=$"http://localhost:5001/api/SplitWise/GetFriends?userId={userId}";
