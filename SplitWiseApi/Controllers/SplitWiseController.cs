@@ -182,7 +182,7 @@ namespace SplitWiseApi.Controllers
         public IEnumerable<Friends> GetFriends(int userId)
         {
             List<Friends> friends = new List<Friends>();
-            SqlCommand cmd = new SqlCommand("GetFriends", con);
+            SqlCommand cmd = new SqlCommand("GetFriends_Test", con);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@UserId", userId);
             SqlDataReader rdr = cmd.ExecuteReader();

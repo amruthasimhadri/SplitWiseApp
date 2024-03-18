@@ -255,6 +255,7 @@ namespace SplitWiseApp.Controllers
             {
                 ViewBag.ErrorMessage = "No friends selected to add to the group.";
             }
+            //return View ();
             return RedirectToAction("AddExpense", new { groupId = groupId });
         }
         //-------------------------Add Friend--------------------
