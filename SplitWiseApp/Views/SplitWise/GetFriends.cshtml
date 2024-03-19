@@ -1,6 +1,5 @@
-﻿
-@model List<SplitWiseApp.Models.Friends>
-
+﻿@model List<SplitWiseApp.Models.Friends>
+<button type="button" class="add-backExpenses-button" style="background-color: black; color: white;" onclick="BackToExpenses" >Back To Expenses</button>
 <h3>Add Group Members</h3>
 
 <div class="text-center">
@@ -59,3 +58,15 @@
     <button type="submit" class="btn" style="background-color: black; color: white;">Ok</button>
 
 </form>
+
+@section Scripts {
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    function BackToExpenses() {
+        var groupId = ViewBag.GroupId;
+            window.location.href = '/SplitWise/GetExpenseOfGroup?groupId=' + groupId;
+    }
+</script>
+}

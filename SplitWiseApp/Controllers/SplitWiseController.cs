@@ -61,7 +61,7 @@ namespace SplitWiseApp.Controllers
             HttpContext.Session.Clear();
             return RedirectToAction("Login");
         }
-        //----------------------Dashboard---------------
+        //----------------------Dashboard--------------------------------
         public IActionResult Dashboard()
         {
             int UserId = HttpContext.Session.GetInt32("UserId") ?? -1;
@@ -221,13 +221,14 @@ namespace SplitWiseApp.Controllers
 
         }
         
-        public IActionResult GetFriendsToAddInGroup(int groupId) // redirects after add group members
+        public IActionResult GetFriendsToAddInGroup(int groupId) // redirects after add group members button
         {
+            ViewBag.GroupId = groupId;  
             int userId = HttpContext.Session.GetInt32("UserId") ?? -1;
             var friends = _apiService.GetFriendsToAddInGroup(userId,groupId);
             return View("GetFriends", friends);
         }
-        public IActionResult GetFriends(int groupId)// redirects friends after creating new group
+        public IActionResult GetFriends(int groupId)// redirects friends after creating new group button
         {
             int GroupId= HttpContext.Session.GetInt32("GroupId") ?? -1;
             int userId = HttpContext.Session.GetInt32("UserId") ?? -1;
