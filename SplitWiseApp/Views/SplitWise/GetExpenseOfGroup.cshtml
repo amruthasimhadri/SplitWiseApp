@@ -14,6 +14,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
+            
         }
 
         th, td {
@@ -44,14 +45,13 @@
 <body>
     <input type="hidden" id="groupId" value="@ViewBag.GroupId" />
     <button type="button" class="add-groupMembers-button"  style="background-color: black; color: white;" onclick="addGroupMembers()">Add Group Members</button>
-    <br />
-    <br />
+    
     <button type="button" class="add-expense-button" style="background-color: black; color: white;" onclick="addExpense()">Add Expense</button>
     <br />
     <br />
-    @if (Model.Count > 0)
+    @if (Model.Count > 0) 
     {
-        <table>
+        <table class="mb-5">
             <tr>
                 <th>Description</th>
                 <th>Total Expense Amount</th>

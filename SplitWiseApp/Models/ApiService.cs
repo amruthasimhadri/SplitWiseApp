@@ -112,9 +112,9 @@ namespace SplitWiseApp.Models
             var friends = JsonConvert.DeserializeObject<List<Friends>>(jsonString);
             return friends;
         }
-        public List<Friends> GetFriends(int userId)
+        public List<Friends> GetFriends(int userId,int GroupId)
         {
-             string apiUrl=$"http://localhost:5001/api/SplitWise/GetFriends?userId={userId}";
+             string apiUrl=$"http://localhost:5001/api/SplitWise/GetFriends?userId={userId}&GroupId={GroupId}";
             var response = _httpClient.GetAsync(apiUrl).Result;
             response.EnsureSuccessStatusCode();
             var jsonString = response.Content.ReadAsStringAsync().Result;
@@ -146,6 +146,15 @@ namespace SplitWiseApp.Models
             response.EnsureSuccessStatusCode();
         }
         //------------------------------------------------------
+        public List<Friends> GetFriendsOfUser(int userId)
+        {
+            string apiUrl = $"http://localhost:5001/api/SplitWise/GetFriendsOfUser?userId={userId}";
+            var response = _httpClient.GetAsync(apiUrl).Result;
+            response.EnsureSuccessStatusCode();
+            var jsonString = response.Content.ReadAsStringAsync().Result;
+            var friends = JsonConvert.DeserializeObject<List<Friends>>(jsonString);
+            return friends;
+        }
         public int? AddFriend(Friends friend)
         {
             string apiUrl = "http://localhost:5001/api/SplitWise/AddFriend";

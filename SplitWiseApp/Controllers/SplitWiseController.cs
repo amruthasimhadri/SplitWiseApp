@@ -220,17 +220,18 @@ namespace SplitWiseApp.Controllers
             return RedirectToAction("GetFriends");
 
         }
-
-        public IActionResult GetFriendsToAddInGroup(int groupId)
+        
+        public IActionResult GetFriendsToAddInGroup(int groupId) // redirects after add group members
         {
             int userId = HttpContext.Session.GetInt32("UserId") ?? -1;
             var friends = _apiService.GetFriendsToAddInGroup(userId,groupId);
             return View("GetFriends", friends);
         }
-        public IActionResult GetFriends(int groupId)
+        public IActionResult GetFriends(int groupId)// redirects friends after creating new group
         {
+            int GroupId= HttpContext.Session.GetInt32("GroupId") ?? -1;
             int userId = HttpContext.Session.GetInt32("UserId") ?? -1;
-            var friends = _apiService.GetFriendsToAddInGroup(userId, groupId);
+            var friends = _apiService.GetFriendsToAddInGroup(userId, GroupId);
             return View(friends);
         }
 
@@ -256,14 +257,23 @@ namespace SplitWiseApp.Controllers
                 ViewBag.ErrorMessage = "No friends selected to add to the group.";
             }
             //return View ();
-            return RedirectToAction("AddExpense", new { groupId = groupId });
+           // return RedirectToAction("AddExpense", new { groupId = groupId });
+            return RedirectToAction("GetExpenseOfGroup", new { groupId = groupId });
         }
         //-------------------------Add Friend--------------------
+        public IActionResult GetFriendsOfUser(int groupId)// layout top friends  to show friends of userId
+        {
+           // int GroupId = HttpContext.Session.GetInt32("GroupId") ?? -1;
+            int userId = HttpContext.Session.GetInt32("UserId") ?? -1;
+            var friends = _apiService.GetFriendsOfUser(userId);
+            return View(friends);
+        }
+
         [HttpGet]
         public IActionResult AddFriend()
         {
             int userId = HttpContext.Session.GetInt32("UserId") ?? -1;
-            var friends = _apiService.GetFriends(userId);
+            var friends = _apiService.GetFriendsOfUser(userId);
             string? error = TempData["ErrorMessage"] as string;
             ViewBag.Error = error;
             return View(friends);

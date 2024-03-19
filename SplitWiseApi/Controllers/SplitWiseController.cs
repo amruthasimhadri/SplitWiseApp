@@ -179,12 +179,13 @@ namespace SplitWiseApi.Controllers
 
         [HttpGet]
         [Route("GetFriends")]
-        public IEnumerable<Friends> GetFriends(int userId)
+        public IEnumerable<Friends> GetFriends(int userId,int GroupId)
         {
             List<Friends> friends = new List<Friends>();
             SqlCommand cmd = new SqlCommand("GetFriends_Test", con);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@UserId", userId);
+            cmd.Parameters.AddWithValue("@GroupId", GroupId);
             SqlDataReader rdr = cmd.ExecuteReader();
             while (rdr.Read())
             {
@@ -251,6 +252,27 @@ namespace SplitWiseApi.Controllers
 
 
         //---------------------------------------------------
+        [HttpGet]
+        [Route("GetFriendsOfUser")]
+        public IEnumerable<Friends> GetFriendsOfUser(int userId)
+        {
+            List<Friends> friends = new List<Friends>();
+            SqlCommand cmd = new SqlCommand("GetFriends", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@UserId", userId);
+          //  cmd.Parameters.AddWithValue("@GroupId", GroupId);
+            SqlDataReader rdr = cmd.ExecuteReader();
+            while (rdr.Read())
+            {
+                friends.Add(new Friends
+                {
+                    FriendId = (int)rdr["FriendId"],
+                    FriendName = rdr["Name"].ToString()
+
+                });
+            }
+            return friends;
+        }
         [HttpPost]
         [Route("AddFriend")]
         public IActionResult AddFriend([FromBody] Friends model)
